@@ -15,6 +15,7 @@
     "http-server": "0.8.5"
   },
   "scripts": {
-    "start": "http-server -a 0.0.0.0 -p 8080 client"
+    "start": "http-server -a 0.0.0.0 -p 8080 client",
+    "start-server": "node server/js/main.js"
   }
 }
