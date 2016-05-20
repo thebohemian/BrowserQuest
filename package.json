@@ -1,14 +1,20 @@
 {
-    "name": "BrowserQuest"
-  , "version": "0.0.1"
-  , "private": false 
-  , "dependencies": {
-    "underscore": ">0"
-    , "log": ">0"
-    , "bison": ">0"
-    , "express": ">0"
-    , "socket.io": ">0"
-    , "sanitizer": "0.1.2"
-    , "memcache": "0.3.0"
+  "name": "BrowserQuest",
+  "version": "0.0.1",
+  "private": false,
+   "dependencies": {
+    "underscore": ">0",
+    "log": ">0",
+    "bison": ">0",
+    "express": ">0",
+    "socket.io": ">0",
+    "sanitizer": "0.1.2",
+    "memcache": "0.3.0"
+  },
+  "devDependencies": {
+    "http-server": "0.8.5"
+  },
+  "scripts": {
+    "start": "http-server -a 0.0.0.0 -p 8080 client"
   }
 }
