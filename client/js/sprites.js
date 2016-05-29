@@ -27,6 +27,7 @@ define(['text!../sprites/agent.json',
         'text!../sprites/item-burger.json',
         'text!../sprites/item-cake.json',
         'text!../sprites/item-firepotion.json',
+        'text!../sprites/item-treasure.json',
         'text!../sprites/item-flask.json',
         'text!../sprites/item-goldenarmor.json',
         'text!../sprites/item-goldensword.json',
@@ -69,14 +70,14 @@ define(['text!../sprites/agent.json',
         'text!../sprites/villagegirl.json',
         'text!../sprites/villager.json',
         'text!../sprites/wizard.json'], function() {
-    
+
     var sprites = {};
-    
+
     _.each(arguments, function(spriteJson) {
         var sprite = JSON.parse(spriteJson);
-        
+
         sprites[sprite.id] = sprite;
     });
-    
+
     return sprites;
 });
