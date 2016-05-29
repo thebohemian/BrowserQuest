@@ -57,6 +57,11 @@ module.exports = World = cls.Class.extend({
                     return self.map.getRandomStartingPosition();
                 }
             });
+
+            player.onTreasureBalanceUpdated(function(newAmount) {
+              self.pushToPlayer(player, new Messages.TreasureBalance(newAmount));
+            });
+
         });
 
         this.onPlayerEnter(function(player) {
@@ -647,6 +652,9 @@ module.exports = World = cls.Class.extend({
             p = 0,
             item = null;
 
+        // TODO: Try to get a treasure item from the Economy module first:
+        // if it fails, then do the normal loot creation
+
         for(var itemName in drops) {
             var percentage = drops[itemName];
 
@@ -657,6 +665,7 @@ module.exports = World = cls.Class.extend({
             }
         }
 
+        // DEBUG50
         if (true) {
           item = this.addItem(this.createItem(Types.getKindFromString('treasure'), mob.x, mob.y, 50000));
         }

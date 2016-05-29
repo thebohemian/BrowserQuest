@@ -10,11 +10,14 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
             this.name = name;
 
             // Renderer
-     		     this.nameOffsetY = -10;
+     		    this.nameOffsetY = -10;
 
             // sprites
             this.spriteName = "clotharmor";
             this.weaponName = "sword1";
+
+            // treasure balance
+            this.treasureBalance = -1;
 
             // modes
             this.isLootMoving = false;
@@ -177,6 +180,10 @@ define(['character', 'exceptions'], function(Character, Exceptions) {
 
         onInvincible: function(callback) {
             this.invincible_callback = callback;
+        },
+
+        setTreasureBalance: function(amount) {
+          this.treasureBalance = amount;
         },
 
         startInvincibility: function() {

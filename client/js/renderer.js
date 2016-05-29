@@ -281,7 +281,11 @@ function(Camera, Item, Character, Player, Timer) {
           }
           var color = "#ffdc79";
           this.setFontSize(24);
-          this.drawText(13213213,
+
+          var text = (this.game.player.treasureBalance == -1) ?
+            '???' : this.game.player.treasureBalance;
+            
+          this.drawText(text,
                         (mx + 24) * this.scale,
                         (my + 12) * this.scale,
                         false,

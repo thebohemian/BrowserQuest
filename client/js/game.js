@@ -1074,6 +1074,12 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
                     self.addItem(item, x, y);
                 });
 
+                self.client.onTreasureBalance(function(balance) {
+                  log.info("received treasure balance: " + balance);
+
+                  self.player.setTreasureBalance(balance);
+                });
+
                 self.client.onSpawnChest(function(chest, x, y) {
                     log.info("Spawned chest (" + chest.id + ") at "+x+", "+y);
                     chest.setSprite(self.sprites[chest.getSpriteName()]);
