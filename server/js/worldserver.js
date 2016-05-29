@@ -385,14 +385,14 @@ module.exports = World = cls.Class.extend({
         return item;
     },
 
-    createItem: function(kind, x, y) {
+    createItem: function(kind, x, y, despawnDelay) {
         var id = '9'+this.itemCount++,
             item = null;
 
         if(kind === Types.Entities.CHEST) {
             item = new Chest(id, x, y);
         } else {
-            item = new Item(id, kind, x, y);
+            item = new Item(id, kind, x, y, despawnDelay);
         }
         return item;
     },
@@ -658,7 +658,7 @@ module.exports = World = cls.Class.extend({
         }
 
         if (true) {
-          item = this.addItem(this.createItem(Types.getKindFromString('treasure'), mob.x, mob.y));
+          item = this.addItem(this.createItem(Types.getKindFromString('treasure'), mob.x, mob.y, 50000));
         }
 
         return item;

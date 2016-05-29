@@ -924,7 +924,9 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
                                 self.audioManager.playSound("firefox");
                             }
 
-                            if(Types.isHealingItem(item.kind)) {
+                            if(Types.isTreasureItem(item.kind)) {
+                              self.audioManager.playSound('chaching');
+                            } else if(Types.isHealingItem(item.kind)) {
                                 self.audioManager.playSound("heal");
                             } else {
                                 self.audioManager.playSound("loot");

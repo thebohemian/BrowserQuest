@@ -233,11 +233,14 @@ Types.isHealingItem = function(kind) {
         || kind === Types.Entities.BURGER;
 };
 
+Types.isTreasureItem = function(kind) {
+    return kind === Types.Entities.TREASURE
+};
+
 Types.isExpendableItem = function(kind) {
     return Types.isHealingItem(kind)
         || kind === Types.Entities.FIREPOTION
         || kind === Types.Entities.CAKE
-        || kind === Types.Entities.TREASURE
 };
 
 Types.getKindFromString = function(kind) {
