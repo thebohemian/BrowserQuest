@@ -5,7 +5,7 @@ define(['area'], function(Area) {
         init: function(game) {
             var self = this;
 
-            this.enabled = true;
+            this.enabled = false;
             this.extension = Detect.canPlayMP3() ? "mp3" : "ogg";
             this.sounds = {};
             this.game = game;

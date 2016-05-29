@@ -67,6 +67,7 @@ define(['text!../sprites/agent.json',
         'text!../sprites/sword2.json',
         'text!../sprites/talk.json',
         'text!../sprites/target.json',
+        'text!../sprites/treasurebalance.json',
         'text!../sprites/villagegirl.json',
         'text!../sprites/villager.json',
         'text!../sprites/wizard.json'], function() {
