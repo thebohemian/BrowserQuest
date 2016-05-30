@@ -43,6 +43,10 @@ define(['jquery', 'app'], function($, App) {
                 app.toggleAbout();
         	});
 
+          $('#treasurebutton').click(function() {
+                app.toggleTreasureMenu();
+        	});
+
         	$('#achievementsbutton').click(function() {
                 app.toggleAchievements();
                 if(app.blinkInterval) {

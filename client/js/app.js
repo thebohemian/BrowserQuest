@@ -204,8 +204,14 @@ define(['jquery', 'storage'], function($, Storage) {
             if($('#achievements').hasClass('active')) {
         	    this.toggleAchievements();
         	    $('#achievementsbutton').removeClass('active');
-        	}
-            $('#instructions').toggleClass('active');
+        	   }
+
+             if($('#treasuremenu').hasClass('active')) {
+           	    this.toggleTreasureMenu();
+           	    $('#treasurebutton').removeClass('active');
+           	}
+
+             $('#instructions').toggleClass('active');
         },
 
         toggleAchievements: function() {
@@ -213,8 +219,30 @@ define(['jquery', 'storage'], function($, Storage) {
         	    this.toggleInstructions();
         	    $('#helpbutton').removeClass('active');
         	}
-            this.resetPage();
-            $('#achievements').toggleClass('active');
+
+          if($('#treasuremenu').hasClass('active')) {
+        	    this.toggleTreasureMenu();
+        	    $('#treasurebutton').removeClass('active');
+        	}
+
+          this.resetPage();
+          $('#achievements').toggleClass('active');
+        },
+
+        toggleTreasureMenu: function() {
+          if($('#instructions').hasClass('active')) {
+        	    this.toggleInstructions();
+        	    $('#helpbutton').removeClass('active');
+        	}
+
+          if($('#achievements').hasClass('active')) {
+            this.toggleAchievements();
+            $('#achievementsbutton').removeClass('active');
+          }
+
+          this.resetPage();
+          $('#treasuremenu').toggleClass('active');
+
         },
 
         resetPage: function() {
@@ -254,6 +282,10 @@ define(['jquery', 'storage'], function($, Storage) {
         	if($('#instructions').hasClass('active')) {
         	    this.toggleInstructions();
         	    $('#helpbutton').removeClass('active');
+        	}
+          if($('#treasuremenu').hasClass('active')) {
+        	    this.toggleTreasureMenu();
+        	    $('#treasurebutton').removeClass('active');
         	}
         	if($('body').hasClass('credits')) {
         	    this.closeInGameCredits();
