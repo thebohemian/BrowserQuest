@@ -54,7 +54,7 @@ define(['jquery', 'storage'], function($, Storage) {
                                 if(!self.isMobile) {
                                     $play.removeClass('loading');
                                 }
-                            }, 3000);
+                            }, 1500);
                             clearInterval(watchCanStart);
                             self.startGame(username, starting_callback);
                         }

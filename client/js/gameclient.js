@@ -468,7 +468,7 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
 
         onTreasureBalance: function(callback) {
           this.treasurebalance_callback = callback;
-        }
+        },
 
         sendHello: function(player) {
             this.sendMessage([Types.Messages.HELLO,
