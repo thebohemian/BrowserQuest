@@ -12,6 +12,7 @@ var cls = require("./lib/class"),
     MobArea = require('./mobarea'),
     ChestArea = require('./chestarea'),
     Chest = require('./chest'),
+    Economy = require("./economy"),
     Messages = require('./message'),
     Properties = require("./properties"),
     Utils = require("./utils"),
@@ -29,6 +30,8 @@ module.exports = World = cls.Class.extend({
         this.ups = 50;
 
         this.map = null;
+
+        this.economy = new Economy();
 
         this.entities = {};
         this.players = {};
@@ -59,6 +62,8 @@ module.exports = World = cls.Class.extend({
             });
 
             player.onTreasureBalanceUpdated(function(newAmount) {
+              log.info(player.name + " has new treasure balance: " + newAmount);
+
               self.pushToPlayer(player, new Messages.TreasureBalance(newAmount));
             });
 

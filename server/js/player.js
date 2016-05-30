@@ -59,7 +59,7 @@ module.exports = Player = Character.extend({
                 self.orientation = Utils.randomOrientation();
                 self.updateHitPoints();
                 self.updatePosition();
-                self.updateTreasureBalance(0);
+                self.updateTreasureBalance();
 
                 self.server.addPlayer(self);
                 self.server.enter_callback(self);
@@ -161,7 +161,10 @@ module.exports = Player = Character.extend({
                         self.broadcast(item.despawn());
                         self.server.removeEntity(item);
 
-                        if(kind === Types.Entities.FIREPOTION) {
+                        if(Types.isTreasureItem(kind)) {
+                            log.debug('treasure collected: ' + item.id);
+                            self.server.economy.giveTreasure(self, item.id, self.treasurebalance_callback);
+                        } else if(kind === Types.Entities.FIREPOTION) {
                             self.updateHitPoints();
                             self.broadcast(self.equip(Types.Entities.FIREFOX));
                             self.firepotionTimeout = setTimeout(function() {
@@ -367,12 +370,8 @@ module.exports = Player = Character.extend({
         this.resetHitPoints(Formulas.hp(this.armorLevel));
     },
 
-    updateTreasureBalance: function(amount) {
-        this.treasureBalance = amount;
-        
-        if (this.treasurebalance_callback) {
-          this.treasurebalance_callback(amount);
-        }
+    updateTreasureBalance: function() {
+        this.server.economy.checkBalance(this, this.treasurebalance_callback);
     },
 
     updatePosition: function() {
