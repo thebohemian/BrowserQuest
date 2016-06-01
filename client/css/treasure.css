@@ -1,0 +1,26 @@
+#cashoutbutton, #registerbutton {
+  background:url('../img/1/treasuremenu-spritesheet.png');
+  background-size: 204px auto;
+  image-rendering:-moz-crisp-edges;
+  image-rendering:-webkit-optimize-contrast;
+}
+
+#registerbutton {
+  width:102px;
+  height:27px;
+  background-position: 0px 0px;
+}
+
+#registerbutton:active {
+  background-position:-102px -0px;
+}
+
+#cashoutbutton {
+  width:102px;
+  height:27px;
+  background-position: 0px -27px;
+}
+
+#cashoutbutton:active {
+  background-position:-102px -27px;
+}

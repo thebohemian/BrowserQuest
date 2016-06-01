@@ -140,6 +140,14 @@ define(['jquery', 'app'], function($, App) {
                return false;
             });
 
+            $('#registerbutton').click(function() {
+                  app.register();
+          	});
+
+            $('#cashoutbutton').click(function() {
+                  app.cashOut();
+          	});
+
             var data = app.storage.data;
     		if(data.hasAlreadyPlayed) {
     		    if(data.player.name && data.player.name !== "") {
