@@ -563,13 +563,15 @@ define(['jquery', 'storage'], function($, Storage) {
         },
 
         register: function() {
+          // Step 1: send a request to register to the server
+
           // TODO: Implement
           //var e = $('#registercode');
           var e = document.getElementById('registercode');
           var amount = 0.005;
           var address = "mhsChFHSZaxwQCP3P4gcTwSn6ENpGYkp8h";
           var text = "bitcoin:" + address + "?label=BrowserQuest&amount=" + amount;
-          
+
           if (e.qrcode) {
             var code = e.qrcode;
             code.makeCode(text);

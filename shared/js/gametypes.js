@@ -28,7 +28,9 @@ Types = {
         BLINK: 24,
         OPEN: 25,
         CHECK: 26,
-        TREASURE_BALANCE: 27
+        TREASURE_BALANCE: 27,
+        REGISTER_PLAYER: 28,
+
     },
 
     Entities: {

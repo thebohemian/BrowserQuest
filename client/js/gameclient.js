@@ -543,7 +543,11 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
         sendCheck: function(id) {
             this.sendMessage([Types.Messages.CHECK,
                               id]);
-        }
+        },
+
+        sendRegisterPlayer: function() {
+          this.sendMessage([Types.Messages.REGISTER_PLAYER]);
+        },
     });
 
     return GameClient;
