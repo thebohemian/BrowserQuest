@@ -19,16 +19,17 @@ var _ = require('underscore'),
             this.formats[Types.Messages.ZONE] = [],
             this.formats[Types.Messages.OPEN] = ['n'],
             this.formats[Types.Messages.CHECK] = ['n']
+            this.formats[Types.Messages.REGISTER_PLAYER_REQUEST] = []
         },
-        
+
         check: function(msg) {
             var message = msg.slice(0),
                 type = message[0],
                 format = this.formats[type];
-            
+
             message.shift();
-            
-            if(format) {    
+
+            if(format) {
                 if(message.length !== format.length) {
                     return false;
                 }
@@ -54,6 +55,6 @@ var _ = require('underscore'),
     });
 
     var checker = new FormatChecker;
-    
+
     exports.check = checker.check.bind(checker);
 })();

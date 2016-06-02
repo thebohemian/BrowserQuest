@@ -1,3 +1,4 @@
+var Messages = require("./message");
 var cls = require("./lib/class");
 
 module.exports = Economy = Class.extend({
@@ -12,8 +13,18 @@ module.exports = Economy = Class.extend({
     }, 500);
   },
 
-  generateParticipationInvoice : function() {
+  generateParticipationInvoice: function(player) {
+    log.debug("generateParticipationInvoice");
+
     // TODO: provide asynchronously
+    var isPossible = true;
+    var amount = 0.005;
+    var address = "mhsChFHSZaxwQCP3P4gcTwSn6ENpGYkp8h";
+    var label = "BrowserQuest";
+
+    setTimeout(function() {
+      player.send(new Messages.RegisterPlayerResponse(isPossible, address, amount, label).serialize());
+    }, 100);
   },
 
   maybeMakeTreasure : function() {
@@ -30,6 +41,6 @@ module.exports = Economy = Class.extend({
     self.balance++;
 
     this._tellBalance(this.balance, callbackOrNull);
-
   }
+
 });

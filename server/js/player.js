@@ -221,7 +221,9 @@ module.exports = Player = Character.extend({
                     self.lastCheckpoint = checkpoint;
                 }
             }
-            else {
+            else if (action === Types.Messages.REGISTER_PLAYER_REQUEST) {
+              self.server.economy.generateParticipationInvoice(self);
+            } else {
                 if(self.message_callback) {
                     self.message_callback(message);
                 }

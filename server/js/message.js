@@ -218,3 +218,16 @@ Messages.TreasureBalance = Message.extend({
                 this.amount];
     }
 });
+
+Messages.RegisterPlayerResponse = Message.extend({
+    init: function(isPossible, address, amount, label) {
+        this.isPossible = isPossible;
+        this.address = address;
+        this.amount = amount;
+        this.label = label;
+    },
+    serialize: function() {
+        return [Types.Messages.REGISTER_PLAYER_RESPONSE,
+                this.isPossible, this.address, this.amount, this.label];
+    }
+});

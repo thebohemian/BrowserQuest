@@ -109,12 +109,19 @@ define(['jquery', 'storage'], function($, Storage) {
                 //>>includeEnd("prodHost");
 
                 this.center();
+
+
+                var self = this;
                 this.game.run(function() {
+                    // Route register responses into 'app'.
+                    self.game.client.onRegisterPlayerResponse(self.registerPlayerResponse);
+
                     $('body').addClass('started');
                 	if(firstTimePlaying) {
                 	    self.toggleInstructions();
                 	}
             	});
+
             }
         },
 
@@ -563,14 +570,14 @@ define(['jquery', 'storage'], function($, Storage) {
         },
 
         register: function() {
-          // Step 1: send a request to register to the server
+          if (this.game) {
+            this.game.client.sendRegisterPlayerRequest();
+          }
+        },
 
-          // TODO: Implement
-          //var e = $('#registercode');
+        registerPlayerResponse : function(isPossible, address, amount, label) {
           var e = document.getElementById('registercode');
-          var amount = 0.005;
-          var address = "mhsChFHSZaxwQCP3P4gcTwSn6ENpGYkp8h";
-          var text = "bitcoin:" + address + "?label=BrowserQuest&amount=" + amount;
+          var text = "bitcoin:" + address + "?label=" + label + "&amount=" + amount;
 
           if (e.qrcode) {
             var code = e.qrcode;
@@ -578,6 +585,7 @@ define(['jquery', 'storage'], function($, Storage) {
           } else {
             e.qrcode = new QRCode(e, text);
           }
+
         },
 
         cashOut: function() {

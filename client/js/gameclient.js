@@ -32,6 +32,7 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
             this.handlers[Types.Messages.HP] = this.receiveHitPoints;
             this.handlers[Types.Messages.BLINK] = this.receiveBlink;
             this.handlers[Types.Messages.TREASURE_BALANCE] = this.receiveTreasureBalance;
+            this.handlers[Types.Messages.REGISTER_PLAYER_RESPONSE] = this.receiveRegisterPlayerResponse;
 
             this.useBison = false;
             this.enable();
@@ -373,6 +374,19 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
             }
         },
 
+        receiveRegisterPlayerResponse: function(data) {
+            log.debug('receiveRegisterPlayerResponse: '+ this.registerplayerresponse_callback);
+            // TODO: Decide what data is being put into the message
+            var isPossible = data[1];
+            var address = data[2];
+            var amount = data[3];
+            var label = data[4];
+
+            if(this.registerplayerresponse_callback) {
+              log.debug('receiveRegisterPlayerResponse: callback will be called');
+                this.registerplayerresponse_callback(isPossible, address, amount, label);
+            }
+        },
 
         onDispatched: function(callback) {
             this.dispatched_callback = callback;
@@ -470,6 +484,10 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
           this.treasurebalance_callback = callback;
         },
 
+        onRegisterPlayerResponse: function(callback) {
+          this.registerplayerresponse_callback = callback;
+        },
+
         sendHello: function(player) {
             this.sendMessage([Types.Messages.HELLO,
                               player.name,
@@ -545,9 +563,10 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
                               id]);
         },
 
-        sendRegisterPlayer: function() {
-          this.sendMessage([Types.Messages.REGISTER_PLAYER]);
+        sendRegisterPlayerRequest: function() {
+          this.sendMessage([Types.Messages.REGISTER_PLAYER_REQUEST]);
         },
+
     });
 
     return GameClient;

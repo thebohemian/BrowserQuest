@@ -29,7 +29,8 @@ Types = {
         OPEN: 25,
         CHECK: 26,
         TREASURE_BALANCE: 27,
-        REGISTER_PLAYER: 28,
+        REGISTER_PLAYER_REQUEST: 28,
+        REGISTER_PLAYER_RESPONSE: 29,
 
     },
 
