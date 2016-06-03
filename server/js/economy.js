@@ -14,8 +14,6 @@ module.exports = Economy = Class.extend({
   },
 
   generateParticipationInvoice: function(player) {
-    log.debug("generateParticipationInvoice");
-
     // TODO: provide asynchronously
     var isPossible = true;
     var amount = 0.005;
