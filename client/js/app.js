@@ -113,8 +113,8 @@ define(['jquery', 'storage'], function($, Storage) {
 
                 var self = this;
                 this.game.run(function() {
-                    // Route register responses into 'app'.
-                    self.game.client.onRegisterPlayerResponse(self.registerPlayerResponse);
+                    // Route register invoices into 'app'.
+                    self.game.client.onRegisterPlayerInvoice(self.registerPlayerInvoice);
 
                     $('body').addClass('started');
                 	if(firstTimePlaying) {
@@ -575,7 +575,7 @@ define(['jquery', 'storage'], function($, Storage) {
           }
         },
 
-        registerPlayerResponse : function(isPossible, address, amount, label) {
+        registerPlayerInvoice : function(isPossible, address, amount, label) {
           var e = document.getElementById('registercode');
           var text = "bitcoin:" + address + "?label=" + label + "&amount=" + amount;
 

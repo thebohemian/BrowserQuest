@@ -219,7 +219,7 @@ Messages.TreasureBalance = Message.extend({
     }
 });
 
-Messages.RegisterPlayerResponse = Message.extend({
+Messages.RegisterPlayerInvoice = Message.extend({
     init: function(isPossible, address, amount, label) {
         this.isPossible = isPossible;
         this.address = address;
@@ -227,7 +227,18 @@ Messages.RegisterPlayerResponse = Message.extend({
         this.label = label;
     },
     serialize: function() {
-        return [Types.Messages.REGISTER_PLAYER_RESPONSE,
+        return [Types.Messages.REGISTER_PLAYER_INVOICE,
                 this.isPossible, this.address, this.amount, this.label];
+    }
+});
+
+Messages.RegisterPlayerResponse = Message.extend({
+    init: function(succeeded, registrationId) {
+        this.succeeded = succeeded;
+        this.registrationId = registrationId;
+    },
+    serialize: function() {
+        return [Types.Messages.REGISTER_PLAYER_RESPONSE,
+                this.succeeded, this.registrationId];
     }
 });

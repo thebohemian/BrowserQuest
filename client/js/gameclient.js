@@ -33,6 +33,7 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
             this.handlers[Types.Messages.BLINK] = this.receiveBlink;
             this.handlers[Types.Messages.TREASURE_BALANCE] = this.receiveTreasureBalance;
             this.handlers[Types.Messages.REGISTER_PLAYER_RESPONSE] = this.receiveRegisterPlayerResponse;
+            this.handlers[Types.Messages.REGISTER_PLAYER_INVOICE] = this.receiveRegisterPlayerInvoice;
 
             this.useBison = false;
             this.enable();
@@ -375,16 +376,22 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
         },
 
         receiveRegisterPlayerResponse: function(data) {
-            log.debug('receiveRegisterPlayerResponse: '+ this.registerplayerresponse_callback);
-            // TODO: Decide what data is being put into the message
             var isPossible = data[1];
             var address = data[2];
             var amount = data[3];
             var label = data[4];
 
             if(this.registerplayerresponse_callback) {
-              log.debug('receiveRegisterPlayerResponse: callback will be called');
                 this.registerplayerresponse_callback(isPossible, address, amount, label);
+            }
+        },
+
+        receiveRegisterPlayerInvoice: function(data) {
+            var succeeded = data[1];
+            var registrationId = data[2];
+
+            if(this.registerplayerinvoice_callback) {
+              this.registerplayerinvoice_callback(succeeded, registrationId);
             }
         },
 
@@ -486,6 +493,10 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
 
         onRegisterPlayerResponse: function(callback) {
           this.registerplayerresponse_callback = callback;
+        },
+
+        onRegisterPlayerInvoice: function(callback) {
+          this.registerplayerinvoice_callback = callback;
         },
 
         sendHello: function(player) {

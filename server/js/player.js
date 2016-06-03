@@ -222,7 +222,7 @@ module.exports = Player = Character.extend({
                 }
             }
             else if (action === Types.Messages.REGISTER_PLAYER_REQUEST) {
-              self.server.economy.generateParticipationInvoice(self);
+              self.server.economy.generateRegistrationInvoice(self);
             } else {
                 if(self.message_callback) {
                     self.message_callback(message);

@@ -13,7 +13,7 @@ module.exports = Economy = Class.extend({
     }, 500);
   },
 
-  generateParticipationInvoice: function(player) {
+  generateRegistrationInvoice: function(player) {
     // TODO: provide asynchronously
     var isPossible = true;
     var amount = 0.005;
@@ -21,7 +21,7 @@ module.exports = Economy = Class.extend({
     var label = "BrowserQuest";
 
     setTimeout(function() {
-      player.send(new Messages.RegisterPlayerResponse(isPossible, address, amount, label).serialize());
+      player.send(new Messages.RegisterPlayerInvoice(isPossible, address, amount, label).serialize());
     }, 100);
   },
 
