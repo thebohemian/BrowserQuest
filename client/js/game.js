@@ -114,10 +114,6 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
         },
 
         initPlayer: function() {
-          // If there is a client and a registrationId bring it to the client
-          if (this.client && this.storage.data.registrationId) {
-            this.client.registrationId = this.storage.data.registrationId;
-          }
 
             if(this.storage.hasAlreadyPlayed()) {
                 this.player.setSpriteName(this.storage.data.player.armor);
@@ -1536,7 +1532,7 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
          * @see GameClient.sendHello
          */
         sendHello: function() {
-            this.client.sendHello(this.player);
+            this.client.sendHello(this.player, this.storage.data.registrationId);
         },
 
         /**

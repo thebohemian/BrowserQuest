@@ -499,12 +499,12 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
           this.registerplayerinvoice_callback = callback;
         },
 
-        sendHello: function(player) {
+        sendHello: function(player, registrationId) {
             this.sendMessage([Types.Messages.HELLO,
                               player.name,
                               Types.getKindFromString(player.getSpriteName()),
                               Types.getKindFromString(player.getWeaponName()),
-                              this.registrationId || ""]);
+                              registrationId || ""]);
         },
 
         sendMove: function(x, y) {
