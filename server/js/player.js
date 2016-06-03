@@ -59,6 +59,10 @@ module.exports = Player = Character.extend({
                 self.orientation = Utils.randomOrientation();
                 self.updateHitPoints();
                 self.updatePosition();
+
+                if (message[4] !== "") {
+                  self.registrationId = message[4];
+                }
                 self.updateTreasureBalance();
 
                 self.server.addPlayer(self);

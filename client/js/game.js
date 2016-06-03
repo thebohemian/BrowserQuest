@@ -114,6 +114,11 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
         },
 
         initPlayer: function() {
+          // If there is a client and a registrationId bring it to the client
+          if (this.client && this.storage.data.registrationId) {
+            this.client.registrationId = this.storage.data.registrationId;
+          }
+
             if(this.storage.hasAlreadyPlayed()) {
                 this.player.setSpriteName(this.storage.data.player.armor);
                 this.player.setWeaponName(this.storage.data.player.weapon);
@@ -1471,6 +1476,17 @@ function(InfoManager, BubbleManager, Renderer, Map, Animation, Sprite, AnimatedT
                     self.createBubble(entityId, message);
                     self.assignBubbleTo(entity);
                     self.audioManager.playSound("chat");
+                });
+
+                self.client.onRegisterPlayerResponse(function(succeeded, registrationId) {
+                  var msg = (succeeded ? "Congratulations! You are now registered!"
+                    : "WARNING: Your registration failed");
+
+                  self.showNotification(msg);
+                  if (succeeded) {
+                    self.client.registrationId = registrationId;
+                    self.storage.setRegistrationId(registrationId);
+                  }
                 });
 
                 self.client.onPopulationChange(function(worldPlayers, totalPlayers) {

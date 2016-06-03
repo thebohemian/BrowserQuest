@@ -4,7 +4,9 @@ var cls = require("./lib/class");
 module.exports = Economy = Class.extend({
 
   init: function(config) {
-    this.balance = 100;
+    this.pendingRegistrations = { };
+
+    this.registeredPlayers = { };
   },
 
   _tellBalance : function(b, callbackOrNull) {
@@ -15,14 +17,75 @@ module.exports = Economy = Class.extend({
 
   generateRegistrationInvoice: function(player) {
     // TODO: provide asynchronously
-    var isPossible = true;
-    var amount = 0.005;
-    var address = "mhsChFHSZaxwQCP3P4gcTwSn6ENpGYkp8h";
-    var label = "BrowserQuest";
+    if (!this.pendingRegistrations[player.id]) {
 
-    setTimeout(function() {
-      player.send(new Messages.RegisterPlayerInvoice(isPossible, address, amount, label).serialize());
-    }, 100);
+      var registration = this.pendingRegistrations[player.id] = {
+        player: player,
+        address: null,
+      };
+
+      // TODO: Receive this from real server
+      setTimeout(function() {
+        // TODO: Placeholder values as if received from server
+        var amount = 0.005;
+        var address = "mhsChFHSZaxwQCP3P4gcTwSn6ENpGYkp8h";
+        var label = "BrowserQuest";
+
+        registration.address = address;
+
+        player.send(new Messages.RegisterPlayerInvoice(true, address, amount, label).serialize());
+      }, 100);
+
+      // TODO: A fake response from the wallet server
+      var self = this;
+      setTimeout(function() {
+        var succeeded = true;
+        var registrationId = "bq_abcde";
+        var address = registration.address;
+        var initialBalance = 110;
+
+        self.receiveRegistrationResponse(address, succeeded, registrationId, initialBalance);
+
+      }, 5000);
+
+    } else {
+      // Registration cannot take place.
+      player.send(new Messages.RegisterPlayerInvoice(false, "", 0, "").serialize());
+    }
+
+  },
+
+  receiveRegistrationResponse : function (address, succeeded, registrationId, initialBalance) {
+    var registration = null;
+    for (var k in this.pendingRegistrations) {
+      var e = this.pendingRegistrations[k];
+      if (e.address === address) {
+        registration = e;
+        break;
+      }
+    }
+
+    if (!registration) {
+      log.warn('Could not find pending registration for address: '+ address);
+    } else {
+      delete this.pendingRegistrations[registrationId];
+
+      var player = registration.player;
+
+      if (succeeded) {
+        this.registeredPlayers[registrationId] = {
+          address: address,
+          balance: initialBalance,
+        };
+
+        player.registrationId = registrationId;
+
+        // Make player receive the current balance
+        player.updateTreasureBalance();
+      }
+
+      player.send(new Messages.RegisterPlayerResponse(succeeded, registrationId).serialize());
+    }
   },
 
   maybeMakeTreasure : function() {
@@ -30,15 +93,27 @@ module.exports = Economy = Class.extend({
   },
 
   checkBalance : function(player, callbackOrNull) {
-    this._tellBalance(this.balance, callbackOrNull);
+    if (!player.registrationId) {
+      this._tellBalance(-1, callbackOrNull);
+    } else {
+      var balance = this.registeredPlayers[player.registrationId].balance;
+
+      this._tellBalance(balance, callbackOrNull);
+    }
   },
 
   giveTreasure : function(player, treasureId, callbackOrNull) {
     var self = this;
 
-    self.balance++;
+    var registeredPlayer = this.registeredPlayer[player.registrationId];
+    if (registeredPlayer) {
+      // TODO: Lookup treasure
+      // TODO: Add treasure value to player balance
+      registeredPlayer.balance++;
 
-    this._tellBalance(this.balance, callbackOrNull);
+      this._tellBalance(registeredPlayer.balance, callbackOrNull);
+    }
+
   }
 
 });

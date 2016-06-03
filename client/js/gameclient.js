@@ -503,7 +503,8 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
             this.sendMessage([Types.Messages.HELLO,
                               player.name,
                               Types.getKindFromString(player.getSpriteName()),
-                              Types.getKindFromString(player.getWeaponName())]);
+                              Types.getKindFromString(player.getWeaponName()),
+                              this.registrationId || ""]);
         },
 
         sendMove: function(x, y) {
