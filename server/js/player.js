@@ -61,6 +61,7 @@ module.exports = Player = Character.extend({
                 self.updatePosition();
 
                 if (message[4] !== "") {
+                  log.debug("registered player connected. Registration ID: '" + message[4] + "'");
                   self.registrationId = message[4];
                 }
                 self.updateTreasureBalance();

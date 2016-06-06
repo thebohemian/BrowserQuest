@@ -6,7 +6,11 @@ module.exports = Economy = Class.extend({
   init: function(config) {
     this.pendingRegistrations = { };
 
-    this.registeredPlayers = { };
+    this.registeredPlayers = {
+      'bq_abcde': {
+        balance: 300
+      }
+    };
   },
 
   _tellBalance : function(b, callbackOrNull) {
@@ -96,22 +100,33 @@ module.exports = Economy = Class.extend({
     if (!player.registrationId) {
       this._tellBalance(-1, callbackOrNull);
     } else {
-      var balance = this.registeredPlayers[player.registrationId].balance;
+      var registeredPlayer = this.registeredPlayers[player.registrationId];
+      if (registeredPlayer) {
+        var balance = registeredPlayer.balance;
 
-      this._tellBalance(balance, callbackOrNull);
+        this._tellBalance(balance, callbackOrNull);
+      } else {
+        log.debug('Did not find registered player for id:' + player.registrationId);
+      }
     }
   },
 
   giveTreasure : function(player, treasureId, callbackOrNull) {
     var self = this;
 
-    var registeredPlayer = this.registeredPlayer[player.registrationId];
-    if (registeredPlayer) {
-      // TODO: Lookup treasure
-      // TODO: Add treasure value to player balance
-      registeredPlayer.balance++;
+    if (player.registrationId) {
+      var registeredPlayer = this.registeredPlayers[player.registrationId];
+      if (registeredPlayer) {
+        // TODO: Lookup treasure
+        // TODO: Add treasure value to player balance
+        registeredPlayer.balance++;
 
-      this._tellBalance(registeredPlayer.balance, callbackOrNull);
+        this._tellBalance(registeredPlayer.balance, callbackOrNull);
+      } else {
+        log.debug('Did not find registered player for id:' + player.registrationId);
+      }
+    } else {
+      log.debug('player is not registered. Treasure lost.');
     }
 
   }
