@@ -8,3 +8,5 @@ client/audio/music
 .DS_Store
 *.swp
 *~
+wallet-server/.gradle
+wallet-server/build

@@ -1,0 +1,12 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'de.rs01.bqw.Test'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.bitcoinj', name: 'bitcoinj-core', version: '0.14.2'
+}
