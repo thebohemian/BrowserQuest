@@ -1,7 +1,7 @@
 
 var fs = require('fs'),
     Metrics = require('./metrics');
- 
+
 
 function main(config) {
     var ws = require("./ws"),
@@ -24,7 +24,7 @@ function main(config) {
                 });
             }
         }, 1000);
-    
+
     switch(config.debug_level) {
         case "error":
             log = new Log(Log.ERROR); break;
@@ -33,9 +33,9 @@ function main(config) {
         case "info":
             log = new Log(Log.INFO); break;
     };
-    
+
     log.info("Starting BrowserQuest game server...");
-    
+
     server.onConnect(function(connection) {
         var world, // the one in which the player will be spawned
             connect = function() {
@@ -43,7 +43,7 @@ function main(config) {
                     world.connect_callback(new Player(connection, world));
                 }
             };
-        
+
         if(metrics) {
             metrics.getOpenWorldCount(function(open_world_count) {
                 // choose the least populated world among open worlds
@@ -64,7 +64,7 @@ function main(config) {
     server.onError(function() {
         log.error(Array.prototype.join.call(arguments, ", "));
     });
-    
+
     var onPopulationChange = function() {
         metrics.updatePlayerCounters(worlds, function(totalPlayers) {
             _.each(worlds, function(world) {
@@ -75,7 +75,7 @@ function main(config) {
     };
 
     _.each(_.range(config.nb_worlds), function(i) {
-        var world = new WorldServer('world'+ (i+1), config.nb_players_per_world, server);
+        var world = new WorldServer('world'+ (i+1), config.nb_players_per_world, server, config.registered_players_filepath);
         world.run(config.map_filepath);
         worlds.push(world);
         if(metrics) {
@@ -83,17 +83,17 @@ function main(config) {
             world.onPlayerRemoved(onPopulationChange);
         }
     });
-    
+
     server.onRequestStatus(function() {
         return JSON.stringify(getWorldDistribution(worlds));
     });
-    
+
     if(config.metrics_enabled) {
         metrics.ready(function() {
             onPopulationChange(); // initialize all counters to 0 when the server starts
         });
     }
-    
+
     process.on('uncaughtException', function (e) {
         log.error('uncaughtException: ' + e);
     });
@@ -101,7 +101,7 @@ function main(config) {
 
 function getWorldDistribution(worlds) {
     var distribution = [];
-    
+
     _.each(worlds, function(world) {
         distribution.push(world.playerCount);
     });

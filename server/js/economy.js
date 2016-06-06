@@ -1,16 +1,26 @@
 var Messages = require("./message");
 var cls = require("./lib/class");
+var fs = require("fs");
 
 module.exports = Economy = Class.extend({
 
-  init: function(config) {
+  init: function(registeredPlayersFile) {
     this.pendingRegistrations = { };
 
-    this.registeredPlayers = {
-      'bq_abcde': {
-        balance: 300
-      }
-    };
+    this.registeredPlayers = JSON.parse(fs.readFileSync(registeredPlayersFile, "utf8"));
+
+    var self = this;
+
+    setInterval(function() {
+      fs.writeFile(registeredPlayersFile, JSON.stringify(self.registeredPlayers), "utf8", (err) => {
+          if (err) {
+            log.warn("Error saving player database.");
+          } else {
+            log.info("Player database saved.");
+          }
+        })
+      }, 30 * 1000);
+
   },
 
   _tellBalance : function(b, callbackOrNull) {
