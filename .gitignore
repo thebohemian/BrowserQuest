@@ -10,3 +10,7 @@ client/audio/music
 *~
 wallet-server/.gradle
 wallet-server/build
+wallet-server/.classpath
+wallet-server/.project
+wallet-server/.settings
+wallet-server/bin
