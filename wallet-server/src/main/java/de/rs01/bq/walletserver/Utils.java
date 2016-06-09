@@ -17,7 +17,7 @@ public final class Utils {
 		
 	}
 	
-	static void createWalletAndConfiguration(String fileName) throws IOException {
+	static void createWalletAndConfiguration(String fileName, String prefix) throws IOException {
 		File f = new File(fileName);
 		// TODO: Get params from somewhere
 		Wallet w = new Wallet(TestNet3Params.get());
@@ -28,6 +28,8 @@ public final class Utils {
 		c.setWalletSeedWords(Joiner.on(" ").join(seed.getMnemonicCode()));
 		c.setWalletCreationTimeSeconds(seed.getCreationTimeSeconds());
 		c.setWalletNetworkId(w.getNetworkParameters().getId());
+		c.setWalletDirectory(f.getParent());
+		c.setWalletPrefix(prefix);
 		
 		c.saveToFile(f);
 	}

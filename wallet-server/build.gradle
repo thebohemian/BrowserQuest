@@ -11,13 +11,14 @@ dependencies {
     compile group: 'org.bitcoinj', name: 'bitcoinj-core', version: '0.14.2'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
 }
 
 task runCreateWallet(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = mainClassName
 
-  args(['create-wallet', 'config/test.json'])
+  args(['create-wallet', 'config/test.json', 'test'])
 }
 
 task runServer(type: JavaExec) {

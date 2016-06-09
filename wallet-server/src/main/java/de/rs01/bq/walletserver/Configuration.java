@@ -75,4 +75,20 @@ public class Configuration {
 		return map.get("walletNetworkId").getAsString();
 	}
 	
+	void setWalletDirectory(String dir) {
+		map.addProperty("walletDirectory", dir);
+	}
+	
+	String getWalletDirectory() {
+		return map.get("walletDirectory").getAsString();
+	}
+	
+	void setWalletPrefix(String prefix) {
+		map.addProperty("walletPrefix", prefix);
+	}
+	
+	String getWalletPrefix() {
+		return map.get("walletPrefix").getAsString();
+	}
+	
 }
