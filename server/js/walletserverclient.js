@@ -14,7 +14,7 @@ module.exports = WalletServerClient = Class.extend({
     });
 
     this.socket.on('walletBalance', function(data) {
-      var walletBalance = data.balance;
+      var walletBalance = data.amount;
 
       if (self.walletbalance_callback) {
         self.walletbalance_callback(walletBalance);
@@ -32,17 +32,36 @@ module.exports = WalletServerClient = Class.extend({
 
     this.socket.on('paymentArrived', function(data) {
       var address = data.address;
-      var amount = data.balance;
+      var amount = data.amount;
 
       if (self.paymentarrived_callback) {
         self.paymentarrived_callback(address, amount);
       }
     });
+
+    this.socket.on('cashoutExecuted', function(data) {
+      var registrationId = data.id;
+      var address = data.address;
+      var amount = data.amount;
+
+      if (self.cashoutexecuted_callback) {
+        self.cashoutexecuted_callback(registrationId, address, amount);
+      }
+    });
+
   },
 
   requestRegistrationInvoice: function(playerId) {
     this.socket.emit('registrationInvoiceEvent', {
       playerId: playerId
+    });
+  },
+
+  requestCashout: function(registrationId, address, amount) {
+    this.socket.emit('cashoutEvent', {
+      id: registrationId,
+      address: address,
+      amount: amount
     });
   },
 
@@ -56,6 +75,10 @@ module.exports = WalletServerClient = Class.extend({
 
   setPaymentArrivedCallback: function(callback) {
     this.paymentarrived_callback = callback;
+  },
+
+  setCashoutExecutedCallback: function(callback) {
+    this.cashoutexecuted_callback = callback;
   },
 
 });

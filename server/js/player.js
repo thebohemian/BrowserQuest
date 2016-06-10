@@ -63,6 +63,7 @@ module.exports = Player = Character.extend({
                 if (message[4] !== "") {
                   log.debug("registered player connected. Registration ID: '" + message[4] + "'");
                   self.registrationId = message[4];
+                  self.server.economy.tellOnline(self);
                 }
                 self.updateTreasureBalance();
 
@@ -228,6 +229,8 @@ module.exports = Player = Character.extend({
             }
             else if (action === Types.Messages.REGISTER_PLAYER_REQUEST) {
               self.server.economy.generateRegistrationInvoice(self);
+            } else if (action === Types.Messages.CASHOUT_REQUEST) {
+                self.server.economy.cashout(self);
             } else {
                 if(self.message_callback) {
                     self.message_callback(message);
@@ -236,6 +239,8 @@ module.exports = Player = Character.extend({
         });
 
         this.connection.onClose(function() {
+            self.server.economy.tellOffline(self);
+
             if(self.firepotionTimeout) {
                 clearTimeout(self.firepotionTimeout);
             }

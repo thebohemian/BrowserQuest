@@ -20,21 +20,40 @@ module.exports = Economy = Class.extend({
     this.walletServerClient.setPaymentArrivedCallback(function() {
       self.receivePaymentArrived.apply(self, arguments);
     });
+    this.walletServerClient.setCashoutExecutedCallback(function() {
+      self.receiveCashoutExecuted.apply(self, arguments);
+    });
 
     this.pendingRegistrations = { };
 
     this.registeredPlayers = JSON.parse(fs.readFileSync(registeredPlayersFile, "utf8"));
 
+    this.onlineRegisteredPlayers = { };
 
     setInterval(function() {
       fs.writeFile(registeredPlayersFile, JSON.stringify(self.registeredPlayers), "utf8", (err) => {
           if (err) {
-            log.warn("Error saving player database.");
+            log.warning("Error saving player database.");
           } else {
             log.info("Player database saved.");
           }
         })
       }, 30 * 1000);
+
+  },
+
+  tellOnline: function(player) {
+    var reg;
+    if (player.registrationId && (reg = this.registeredPlayers[player.registrationId])) {
+      this.onlineRegisteredPlayers[player.registrationId] = player;
+    }
+  },
+
+  tellOffline: function(player) {
+    var reg;
+    if (player.registrationId && (reg = this.registeredPlayers[player.registrationId])) {
+      delete this.onlineRegisteredPlayers[player.registrationId];
+    }
 
   },
 
@@ -62,6 +81,19 @@ module.exports = Economy = Class.extend({
 
   },
 
+  cashout: function(player) {
+    var reg;
+    if (player.registrationId && (reg = this.registeredPlayers[player.registrationId]) && reg.redeemAddress) {
+      if (reg.balance > 100) {
+        log.info('cashing out 100000 satoshis for player: ' + player.id);
+
+        this.walletServerClient.requestCashout(player.registrationId, reg.redeemAddress, 100 * 1000);
+      }
+    } else {
+      log.warning('cashout request for unregistered player ignored.');
+    }
+  },
+
   receiveWalletBalance: function(walletBalance) {
     log.info("game wallet contains: " + walletBalance + " satoshis");
   },
@@ -80,7 +112,7 @@ module.exports = Economy = Class.extend({
 
       player.send(new Messages.RegisterPlayerInvoice(true, address, amount, label).serialize());
     } else {
-        log.warn('received registration invoice response for player that has no pending registration: ' + playerId);
+        log.warning('received registration invoice response for player that has no pending registration: ' + playerId);
     }
   },
 
@@ -109,10 +141,34 @@ module.exports = Economy = Class.extend({
       this.handleRegistration(player, address, succeeded, registrationId, initialBalance);
 
     } else {
-      // TODO: Try to send money to player
+      // TODO: Try to send money to registered player
 
-      log.warn('Payment arrived but no corresponding pending registration found!');
+      log.warning('Payment arrived but no corresponding pending registration found!');
     }
+  },
+
+  receiveCashoutExecuted: function(registrationId, address, amount) {
+    log.debug("received cashout executed: " + address + " - " + amount);
+
+    var reg = this.registeredPlayers[registrationId];
+
+    if (reg) {
+      reg.balance -= (amount / 1000);
+
+      var player = this.onlineRegisteredPlayers[registrationId];
+
+      if (player) {
+        player.updateTreasureBalance();
+      } else {
+        log.info('Player was not online. Balance change will be updated on next connection.');
+      }
+
+    } else {
+      // TODO: Try to send money to registered player
+
+      log.warning('Payment arrived but no corresponding pending registration found!');
+    }
+
   },
 
   handleRegistration : function (player, address, succeeded, registrationId, initialBalance) {

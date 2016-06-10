@@ -20,6 +20,7 @@ var _ = require('underscore'),
             this.formats[Types.Messages.OPEN] = ['n'],
             this.formats[Types.Messages.CHECK] = ['n']
             this.formats[Types.Messages.REGISTER_PLAYER_REQUEST] = []
+            this.formats[Types.Messages.CASHOUT_REQUEST] = []
         },
 
         check: function(msg) {
