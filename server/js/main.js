@@ -1,7 +1,8 @@
 
 var fs = require('fs'),
-    Metrics = require('./metrics');
-
+    Metrics = require('./metrics'),
+    Economy = require('./economy'),
+    WalletServerClient = require('./walletserverclient');
 
 function main(config) {
     var ws = require("./ws"),
@@ -9,6 +10,8 @@ function main(config) {
         Log = require('log'),
         _ = require('underscore'),
         server = new ws.socketIOServer(config.host, config.port),
+        walletserverclient = new WalletServerClient(config.walletserver_url),
+        economy = new Economy(walletserverclient, config.registered_players_filepath),
         metrics = config.metrics_enabled ? new Metrics(config) : null;
         worlds = [],
         lastTotalPlayers = 0,
@@ -75,7 +78,7 @@ function main(config) {
     };
 
     _.each(_.range(config.nb_worlds), function(i) {
-        var world = new WorldServer('world'+ (i+1), config.nb_players_per_world, server, config.registered_players_filepath);
+        var world = new WorldServer('world'+ (i+1), config.nb_players_per_world, server, economy);
         world.run(config.map_filepath);
         worlds.push(world);
         if(metrics) {
