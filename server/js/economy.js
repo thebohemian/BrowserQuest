@@ -141,9 +141,27 @@ module.exports = Economy = Class.extend({
       this.handleRegistration(player, address, succeeded, registrationId, initialBalance);
 
     } else {
-      // TODO: Try to send money to registered player
+      var reg;
+      var registrationId;
 
-      log.warning('Payment arrived but no corresponding pending registration found!');
+      for (var k in this.registeredPlayers) {
+        if (this.registeredPlayers[k].address === address) {
+            registrationId = k;
+            reg = this.registeredPlayers[k];
+        }
+      }
+      log.debug("received payment arrived: " + address + " - " + amount);
+
+      if (reg) {
+        reg.balance += (amount / 1000);
+
+        var player = this.onlineRegisteredPlayers[registrationId];
+        player && player.updateTreasureBalance();
+
+      } else {
+        log.warning('Payment arrived but no corresponding pending registration found!');
+      }
+
     }
   },
 
