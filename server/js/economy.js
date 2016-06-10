@@ -42,7 +42,7 @@ module.exports = Economy = Class.extend({
       setTimeout(function() {
         // TODO: Placeholder values as if received from server
         var amount = 0.005;
-        var address = "mhsChFHSZaxwQCP3P4gcTwSn6ENpGYkp8h";
+        var address = "mpvxqJjWbiWYYAtDLrhSBmme8xSF6MTguQ";
         var label = "BrowserQuest";
 
         registration.address = address;

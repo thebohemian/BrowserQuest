@@ -375,23 +375,23 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
             }
         },
 
-        receiveRegisterPlayerResponse: function(data) {
+        receiveRegisterPlayerInvoice: function(data) {
             var isPossible = data[1];
             var address = data[2];
             var amount = data[3];
             var label = data[4];
 
-            if(this.registerplayerresponse_callback) {
-                this.registerplayerresponse_callback(isPossible, address, amount, label);
+            if(this.registerplayerinvoice_callback) {
+              this.registerplayerinvoice_callback(isPossible, address, amount, label);
             }
         },
 
-        receiveRegisterPlayerInvoice: function(data) {
+        receiveRegisterPlayerResponse: function(data) {
             var succeeded = data[1];
             var registrationId = data[2];
 
-            if(this.registerplayerinvoice_callback) {
-              this.registerplayerinvoice_callback(succeeded, registrationId);
+            if(this.registerplayerresponse_callback) {
+                this.registerplayerresponse_callback(succeeded, registrationId);
             }
         },
 
