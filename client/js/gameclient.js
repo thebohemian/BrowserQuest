@@ -579,6 +579,10 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
           this.sendMessage([Types.Messages.REGISTER_PLAYER_REQUEST]);
         },
 
+        sendCashoutRequest: function() {
+          this.sendMessage([Types.Messages.CASHOUT_REQUEST]);
+        },
+
     });
 
     return GameClient;

@@ -589,7 +589,9 @@ define(['jquery', 'storage'], function($, Storage) {
         },
 
         cashOut: function() {
-          // TODO: Implement
+          if(this.game) {
+            this.game.client.sendCashoutRequest();
+          }
         },
     });
 
