@@ -13,29 +13,29 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 
-public class Configuration {
+public class ServerConfiguration {
 	
 	private JsonObject map;
 	
-	private Configuration(JsonObject map) {
+	private ServerConfiguration(JsonObject map) {
 		this.map = map;
 	}
 	
-	static Configuration loadFromFile(File f) throws IOException {
+	static ServerConfiguration loadFromFile(File f) throws IOException {
 		Gson g = new Gson();
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(f));
 
-			return new Configuration((JsonObject) g.fromJson(reader, JsonObject.class));
+			return new ServerConfiguration((JsonObject) g.fromJson(reader, JsonObject.class));
 		} finally {
 			IOUtils.closeQuietly(reader);
 		}
 		
 	}
 	
-	static Configuration createEmptyConfiguration() {
-		return new Configuration(new JsonObject());
+	static ServerConfiguration createEmptyConfiguration() {
+		return new ServerConfiguration(new JsonObject());
 	}
 	
 	void saveToFile(File f) throws IOException {
@@ -91,4 +91,20 @@ public class Configuration {
 		return map.get("walletPrefix").getAsString();
 	}
 	
+	void setServerHostname(String prefix) {
+		map.addProperty("serverHostname", prefix);
+	}
+	
+	String getServerHostname() {
+		return map.get("serverHostname").getAsString();
+	}
+
+	void setServerPort(int port) {
+		map.addProperty("serverPort", port);
+	}
+	
+	int getServerPort() {
+		return map.get("serverPort").getAsInt();
+	}
+
 }

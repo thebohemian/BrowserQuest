@@ -11,7 +11,10 @@ dependencies {
     compile group: 'org.bitcoinj', name: 'bitcoinj-core', version: '0.14.2'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.21'
+    compile group: 'org.beanshell', name: 'bsh', version: '2.0b5'
+    compile group: 'com.corundumstudio.socketio', name: 'netty-socketio', version: '1.7.10'
+   
 }
 
 task runCreateWallet(type: JavaExec) {
@@ -22,6 +25,7 @@ task runCreateWallet(type: JavaExec) {
 }
 
 task runServer(type: JavaExec) {
+  standardInput = System.in
   classpath = sourceSets.main.runtimeClasspath
   main = mainClassName
 

@@ -1,8 +1,8 @@
 package de.rs01.bq.walletserver;
 
 import java.io.File;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import org.bitcoinj.core.Address;
@@ -13,63 +13,64 @@ import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.kits.WalletAppKit;
 import org.bitcoinj.wallet.UnreadableWalletException;
 import org.bitcoinj.wallet.Wallet;
+import org.bitcoinj.wallet.Wallet.BalanceType;
 import org.bitcoinj.wallet.listeners.WalletCoinsReceivedEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.util.concurrent.Service;
-import com.google.common.util.concurrent.Service.Listener;
-import com.google.common.util.concurrent.Service.State;
+import de.rs01.bq.walletserver.SocketIOFrontend.Listener;
 
-public class Server {
+public class BitcoinJBackend {
 	
-	private static final Logger logger = LoggerFactory.getLogger(Server.class);
+	private static final Logger logger = LoggerFactory.getLogger(BitcoinJBackend.class);
 
-	Configuration configuration;
-
-	Wallet wallet;
+	ServerConfiguration configuration;
 
 	WalletAppKit kit;
+	
+	List<Listener> listeners = new ArrayList<Listener>();
 
-	Server(Configuration configuration) {
+	BitcoinJBackend(ServerConfiguration configuration) {
 		this.configuration = configuration;
 
+		final Wallet loadedWallet;
 		try {
-			wallet = Utils.recreateWallet(configuration);
+			loadedWallet = Utils.recreateWallet(configuration);
 		} catch (UnreadableWalletException e) {
 			throw new RuntimeException("Unable to set up wallet.");
 		}
 
-		kit = new WalletAppKit(wallet.getNetworkParameters(), new File(configuration.getWalletDirectory()),
+		kit = new WalletAppKit(loadedWallet.getNetworkParameters(), new File(configuration.getWalletDirectory()),
 				configuration.getWalletPrefix()) {
 			
 			@Override
 			protected Wallet createWallet() {
-				return wallet;
+				return loadedWallet;
 			}
 
 			@Override
-			protected PeerGroup createPeerGroup() throws TimeoutException {
-				PeerGroup pg = super.createPeerGroup();
-				pg.setPeerDiscoveryTimeoutMillis(10 * 1000);
-				pg.setConnectTimeoutMillis(10 * 1000);
-				
-				return pg; 
+			protected void onSetupCompleted() {
+				setupListeners();
 			}
 			
 			
 		};
-		
-		wallet.addCoinsReceivedEventListener(new WalletCoinsReceivedEventListener() {
+	}
+	
+	private void setupListeners() {
+	
+		kit.wallet().addCoinsReceivedEventListener(new WalletCoinsReceivedEventListener() {
 			
 			@Override
 			public void onCoinsReceived(Wallet wallet, Transaction tx, Coin prevBalance, Coin newBalance) {
+				
+				logger.info("coins received: " + tx.getValueSentToMe(wallet));
 				
 		        for (TransactionOutput o : tx.getOutputs()) {
 		            if (o.isMine(wallet)) {
 		            	Address receivingAddress = o.getAddressFromP2PKHScript(wallet.getNetworkParameters());
 		            	Coin coin = o.getValue();
-		            	
+		            			            	
 		            	if (receivingAddress != null) {
 		            		notifyCoinsReceived(receivingAddress, coin);
 		            	} else {
@@ -81,21 +82,46 @@ public class Server {
 			}
 			
 		});
-		
+	}
+	
+	void addListener(Listener l) {
+		listeners.add(l);
+	}
+
+	void removeListener(Listener l) {
+		listeners.remove(l);
+	}
+
+	interface Listener {
+		void coinsReceived(Address receivingAddress, Coin amount);
+	}
+	
+	void start() {
 		kit.startAsync();
 		
 		kit.awaitRunning();
 	}
 	
-	private void notifyCoinsReceived(Address address, Coin coin) {
-		logger.info("[%s] - received coins: %s", address, coin);
+	void stop() {
+		kit.stopAsync();
+	}
+	
+	private void notifyCoinsReceived(Address receivingAddress, Coin amount) {
+		for (Listener l : listeners) {
+			l.coinsReceived(receivingAddress, amount);
+		}
 	}
 
 	Address createRegistrationInvoice() {
-		Address address = wallet.freshReceiveAddress();
+		Address address = kit.wallet().freshReceiveAddress();
 		
-		logger.info("[%s] - created new receiving address", address);
+		logger.info("[{}] - created new receiving address", address);
 		
 		return address;
 	}
+	
+	Coin getWalletBalance() {
+		return kit.wallet().getBalance(BalanceType.ESTIMATED_SPENDABLE);
+	}
+	
 }
