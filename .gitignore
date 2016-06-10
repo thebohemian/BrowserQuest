@@ -10,7 +10,9 @@ client/audio/music
 *~
 wallet-server/.gradle
 wallet-server/build
+wallet-server/config
 wallet-server/.classpath
 wallet-server/.project
 wallet-server/.settings
 wallet-server/bin
+registered_players.json
