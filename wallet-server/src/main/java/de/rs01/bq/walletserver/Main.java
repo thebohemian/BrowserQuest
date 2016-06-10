@@ -53,6 +53,12 @@ public class Main {
 				logger.info("[{}] - received coins: {}", receivingAddress, amount);
 				frontend.sendPaymentArrived(receivingAddress.toBase58(), amount.longValue());
 			}
+
+			@Override
+			public void coinsSent(String id, Address receivingAddress, Coin amount) {
+				logger.info("[{}] - sent coins: {}", receivingAddress, amount);
+				frontend.sendCashoutExecuted(id, receivingAddress.toBase58(), amount.longValue());
+			}
 		});
 		
 		frontend.addListener(new SocketIOFrontend.Listener() {
@@ -70,6 +76,17 @@ public class Main {
 				String addr = backend.createRegistrationInvoice().toBase58();
 				
 				frontend.sendRegistrationInvoice(playerId, addr);
+			}
+
+			@Override
+			public void cashoutRequested(String id, String address, long amount) {
+				logger.info("received cashout request to address: {} of {} satoshi", address, amount);
+				
+				Address addr = Address.fromBase58(null, address);
+				Coin c = Coin.valueOf(amount);
+				backend.sendCoins(id, addr, c);
+				
+				frontend.sendWalletBalance(backend.getWalletBalance().longValue());
 			}
 			
 		});

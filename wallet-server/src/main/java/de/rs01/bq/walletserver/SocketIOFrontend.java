@@ -24,6 +24,10 @@ public class SocketIOFrontend {
 	private static final String WALLET_BALANCE = "walletBalance";
 
 	private static final String PAYMENT_ARRIVED = "paymentArrived";
+	
+	private static final String CASHOUT_EVENT = "cashoutEvent";
+	
+	private static final String CASHOUT_EXECUTED = "cashoutExecuted";
 
 	SocketIOServer server;
 
@@ -48,12 +52,22 @@ public class SocketIOFrontend {
 			}
 		});
 
-		server.addEventListener(REGISTRATION_INVOICE_EVENT, RegistrationInvoiceObject.class,
-				new DataListener<RegistrationInvoiceObject>() {
+		server.addEventListener(REGISTRATION_INVOICE_EVENT, PlayerPaymentAddressObject.class,
+				new DataListener<PlayerPaymentAddressObject>() {
 
 					@Override
-					public void onData(SocketIOClient client, RegistrationInvoiceObject data, AckRequest ackRequest) {
+					public void onData(SocketIOClient client, PlayerPaymentAddressObject data, AckRequest ackRequest) {
 						notifyRegistrationInvoice(data);
+					}
+
+				});
+
+		server.addEventListener(CASHOUT_EVENT, PaymentObject.class,
+				new DataListener<PaymentObject>() {
+
+					@Override
+					public void onData(SocketIOClient client, PaymentObject data, AckRequest ackRequest) {
+						notifyCashoutRequested(data);
 					}
 
 				});
@@ -78,6 +92,8 @@ public class SocketIOFrontend {
 		void connected();
 		
 		void registrationInvoiceRequested(long playerId);
+		
+		void cashoutRequested(String id, String address, long amount);
 	}
 
 	void start() {
@@ -94,42 +110,27 @@ public class SocketIOFrontend {
 		}
 	}
 
-	void notifyRegistrationInvoice(RegistrationInvoiceObject data) {
+	void notifyRegistrationInvoice(PlayerPaymentAddressObject data) {
 		for (Listener l : listeners) {
 			l.registrationInvoiceRequested(data.playerId);
 		}
 	}
-
-	public static class RegistrationInvoiceObject {
-
-		private long playerId;
-
-		public RegistrationInvoiceObject() {
+	
+	void notifyCashoutRequested(PaymentObject data) {
+		for (Listener l : listeners) {
+			l.cashoutRequested(data.id, data.address, data.amount);
 		}
-
-		public RegistrationInvoiceObject(long playerId) {
-			this.playerId = playerId;
-		}
-
-		public long getPlayerId() {
-			return playerId;
-		}
-
-		public void setPlayerId(long playerId) {
-			this.playerId = playerId;
-		}
-
 	}
 	
-	public static class RegistrationInvoiceResponseObject {
+	public static class PlayerPaymentAddressObject {
 
 		private long playerId;
 		private String address;
 
-		public RegistrationInvoiceResponseObject() {
+		public PlayerPaymentAddressObject() {
 		}
 
-		public RegistrationInvoiceResponseObject(long playerId, String address) {
+		public PlayerPaymentAddressObject(long playerId, String address) {
 			this.playerId = playerId;
 			this.address = address;
 		}
@@ -154,23 +155,34 @@ public class SocketIOFrontend {
 
 	void sendRegistrationInvoice(long playerId, String address) {
 		server.getBroadcastOperations().sendEvent(REGISTRATION_INVOICE_RESPONSE,
-				new RegistrationInvoiceResponseObject(playerId, address));
+				new PlayerPaymentAddressObject(playerId, address));
 	}
 	
-	public static class WalletBalanceObject {
+	public static class PaymentObject {
+		
+		private String id;
 		
 		private String address;
 		
-		private long balance;
+		private long amount;
 		
-		public WalletBalanceObject() {
+		public PaymentObject() {
 		}
 		
-		public WalletBalanceObject(String address, long balanceInSatoshis) {
+		public PaymentObject(String id, String address, long amountInSatoshis) {
+			this.id = id;
 			this.address = address;
-			balance = balanceInSatoshis;
+			amount = amountInSatoshis;
 		}
 		
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
 		public String getAddress() {
 			return address;
 		}
@@ -179,24 +191,31 @@ public class SocketIOFrontend {
 			this.address = address;
 		}
 
-		public long getBalance() {
-			return balance;
+		public long getAmount() {
+			return amount;
 		}
 
-		public void setBalance(long balance) {
-			this.balance = balance;
+		public void setAmount(long balance) {
+			this.amount = balance;
 		}
 		
 	}
 	
 	void sendWalletBalance(long satoshis) {
 		server.getBroadcastOperations().sendEvent(WALLET_BALANCE,
-				new WalletBalanceObject(null, satoshis));
+				new PaymentObject(null, null, satoshis));
 	}
 
 	void sendPaymentArrived(String address, long amount) {
 		server.getBroadcastOperations().sendEvent(PAYMENT_ARRIVED,
-				new WalletBalanceObject(address, amount));
+				new PaymentObject(null, address, amount));
 		
 	}
+	
+	void sendCashoutExecuted(String id, String address, long amount) {
+		server.getBroadcastOperations().sendEvent(CASHOUT_EXECUTED,
+				new PaymentObject(id, address, amount));
+		
+	}
+	
 }
