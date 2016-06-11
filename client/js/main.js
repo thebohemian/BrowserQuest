@@ -149,23 +149,38 @@ define(['jquery', 'app'], function($, App) {
           	});
 
             $('#scanRedeemcodeButton').click(function() {
+              var reader = $('#reader');
+              var inUse = reader.data('inUse');
 
-              $('#reader').html5_qrcode(function(data) {
-                  if (data.startsWith('bitcoin:')) {
-                    var addr = data.substring(8, 8 + 34);
-                    $('#registerRedeemcodeInput').val(addr);
+              if (inUse) {
+                reader.html5_qrcode_stop();
+                reader.empty();
+                reader.data('inUse', false);
+              } else {
+                reader.data('inUse', true);
+
+                reader.html5_qrcode(function(data) {
+                    if (data.startsWith('bitcoin:')) {
+                      var addr = data.substring(8, 8 + 34);
+                      $('#registerRedeemcodeInput').val(addr);
+
+                      // Run registration righ away
+                      app.register(addr);
+                    }
+
+                    reader.html5_qrcode_stop();
+                    reader.empty();
+
+                  },
+                  function(error){
+                      // ignored.
+                  }, function(videoError){
+                    reader.html5_qrcode_stop();
+                    reader.empty();
                   }
+                );
 
-                  $('#reader').html5_qrcode_stop();
-                  $('#reader').empty();
-                },
-                function(error){
-                    // ignored.
-                }, function(videoError){
-                  $('#reader').html5_qrcode_stop();
-                  $('#reader').empty();
-                }
-              );
+              }
 
             });
 
