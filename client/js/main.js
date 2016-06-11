@@ -149,7 +149,7 @@ define(['jquery', 'app'], function($, App) {
           	});
 
             $('#scanRedeemcodeButton').click(function() {
-              var reader = $('#reader');
+              var reader = $('#registercodeOrReader');
               var inUse = reader.data('inUse');
 
               if (inUse) {
@@ -157,6 +157,7 @@ define(['jquery', 'app'], function($, App) {
                 reader.empty();
                 reader.data('inUse', false);
               } else {
+                reader.empty(); // Might exist a QR code there
                 reader.data('inUse', true);
 
                 reader.html5_qrcode(function(data) {

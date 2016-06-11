@@ -24,3 +24,8 @@
 #cashoutbutton:active {
   background-position:-102px -27px;
 }
+
+.codeOrReader {
+  width: 300px;
+  height: 300px;
+}

@@ -114,7 +114,9 @@ define(['jquery', 'storage'], function($, Storage) {
                 var self = this;
                 this.game.run(function() {
                     // Route register invoices into 'app'.
-                    self.game.client.onRegisterPlayerInvoice(self.registerPlayerInvoice);
+                    self.game.client.onRegisterPlayerInvoice(function() {
+                      self.registerPlayerInvoice.apply(self, arguments);
+                    });
 
                     $('body').addClass('started');
                 	if(firstTimePlaying) {
@@ -577,7 +579,7 @@ define(['jquery', 'storage'], function($, Storage) {
 
         registerPlayerInvoice : function(isPossible, address, amount, label) {
           if (isPossible) {
-            var e = document.getElementById('registercode');
+            var e = document.getElementById('registercodeOrReader');
             var text = "bitcoin:" + address + "?label=" + label + "&amount=" + amount;
 
             if (e.qrcode) {
@@ -586,8 +588,10 @@ define(['jquery', 'storage'], function($, Storage) {
             } else {
               e.qrcode = new QRCode(e, text);
             }
+          } else {
+            this.game.showNotification('Failed: ' + label);
           }
-          
+
         },
 
         cashOut: function() {

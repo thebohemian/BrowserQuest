@@ -68,12 +68,12 @@ module.exports = Economy = Class.extend({
       log.debug('registration for player: ' + player.id + ' not possible. Already registered.');
 
       // Already registered
-      player.send(new Messages.RegisterPlayerInvoice(false, "", 0, "").serialize());
+      player.send(new Messages.RegisterPlayerInvoice(false, "", 0, "Already registered.").serialize());
     } else if (this.pendingRegistrations[player.id]){
       log.debug('registration for player: ' + player.id + ' not possible. Already pending registration.');
 
       // Already a pending registration
-      player.send(new Messages.RegisterPlayerInvoice(false, "", 0, "").serialize());
+      player.send(new Messages.RegisterPlayerInvoice(false, "", 0, "Registration already pending.").serialize());
     } else {
       log.debug('attempting registration for player: ' + player.id);
 

@@ -47,8 +47,13 @@ Mozilla presents an HTML5 mini-MMORPG by Little Workshop http://www.littleworksh
         <title>BrowserQuest</title>
 
 				<style>
-				.floatleft {
-					float:left;
+				.coinmenu-left {
+				    float: left;
+				    width: 50%;
+				}
+
+				.coinmenu-right {
+				    margin-left: 50%;
 				}
 				</style>
 	</head>
@@ -257,15 +262,16 @@ Mozilla presents an HTML5 mini-MMORPG by Little Workshop http://www.littleworksh
 						<article id="treasuremenu" class="clickable">
 		            <div class="close"></div>
 								<p>Manage your treasures</p>
-		            <div class="clickable">
-									<div class="floatleft">
+		            <div>
+									<div class="coinmenu-left">
 										<div id="registerbutton"></div>
 										<input id="registerRedeemcodeInput" type="text" value="" maxlength="100"></input>
 										<input id="scanRedeemcodeButton" type="button" value="scan"></input>
-										<div id="reader" style="width:280px;height:280px"></div>
-										<div id="registercode"></div>
+										<div id="registercodeOrReader" class="codeOrReader"></div>
 									</div>
-									<div id="cashoutbutton" class="button floatleft"></div>
+									<div class="coinmenu-right">
+										<div id="cashoutbutton" class="button"></div>
+									</div>
 		            </div>
 		        </article>
     			<div id="canvas">
