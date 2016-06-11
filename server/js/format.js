@@ -19,7 +19,7 @@ var _ = require('underscore'),
             this.formats[Types.Messages.ZONE] = [],
             this.formats[Types.Messages.OPEN] = ['n'],
             this.formats[Types.Messages.CHECK] = ['n']
-            this.formats[Types.Messages.REGISTER_PLAYER_REQUEST] = []
+            this.formats[Types.Messages.REGISTER_PLAYER_REQUEST] = ['s']
             this.formats[Types.Messages.CASHOUT_REQUEST] = []
         },
 

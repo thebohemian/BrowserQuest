@@ -575,8 +575,8 @@ define(['player', 'entityfactory', 'lib/bison'], function(Player, EntityFactory,
                               id]);
         },
 
-        sendRegisterPlayerRequest: function() {
-          this.sendMessage([Types.Messages.REGISTER_PLAYER_REQUEST]);
+        sendRegisterPlayerRequest: function(redeemAddress) {
+          this.sendMessage([Types.Messages.REGISTER_PLAYER_REQUEST, redeemAddress]);
         },
 
         sendCashoutRequest: function() {

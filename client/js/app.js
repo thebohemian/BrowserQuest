@@ -569,23 +569,25 @@ define(['jquery', 'storage'], function($, Storage) {
             }
         },
 
-        register: function() {
+        register: function(redeemAddress) {
           if (this.game) {
-            this.game.client.sendRegisterPlayerRequest();
+            this.game.client.sendRegisterPlayerRequest(redeemAddress);
           }
         },
 
         registerPlayerInvoice : function(isPossible, address, amount, label) {
-          var e = document.getElementById('registercode');
-          var text = "bitcoin:" + address + "?label=" + label + "&amount=" + amount;
+          if (isPossible) {
+            var e = document.getElementById('registercode');
+            var text = "bitcoin:" + address + "?label=" + label + "&amount=" + amount;
 
-          if (e.qrcode) {
-            var code = e.qrcode;
-            code.makeCode(text);
-          } else {
-            e.qrcode = new QRCode(e, text);
+            if (e.qrcode) {
+              var code = e.qrcode;
+              code.makeCode(text);
+            } else {
+              e.qrcode = new QRCode(e, text);
+            }
           }
-
+          
         },
 
         cashOut: function() {

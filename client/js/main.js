@@ -141,12 +141,33 @@ define(['jquery', 'app'], function($, App) {
             });
 
             $('#registerbutton').click(function() {
-                  app.register();
+                  app.register($('#registerRedeemcodeInput').val());
           	});
 
             $('#cashoutbutton').click(function() {
                   app.cashOut();
           	});
+
+            $('#scanRedeemcodeButton').click(function() {
+
+              $('#reader').html5_qrcode(function(data) {
+                  if (data.startsWith('bitcoin:')) {
+                    var addr = data.substring(8, 8 + 34);
+                    $('#registerRedeemcodeInput').val(addr);
+                  }
+
+                  $('#reader').html5_qrcode_stop();
+                  $('#reader').empty();
+                },
+                function(error){
+                    // ignored.
+                }, function(videoError){
+                  $('#reader').html5_qrcode_stop();
+                  $('#reader').empty();
+                }
+              );
+
+            });
 
             var data = app.storage.data;
     		if(data.hasAlreadyPlayed) {

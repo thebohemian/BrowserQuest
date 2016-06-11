@@ -63,20 +63,30 @@ module.exports = Economy = Class.extend({
     }, 500);
   },
 
-  generateRegistrationInvoice: function(player) {
-    if (!this.pendingRegistrations[player.id]) {
+  attemptRegistration: function(player, redeemAddress) {
+    if (player.registrationId) {
+      log.debug('registration for player: ' + player.id + ' not possible. Already registered.');
+
+      // Already registered
+      player.send(new Messages.RegisterPlayerInvoice(false, "", 0, "").serialize());
+    } else if (this.pendingRegistrations[player.id]){
+      log.debug('registration for player: ' + player.id + ' not possible. Already pending registration.');
+
+      // Already a pending registration
+      player.send(new Messages.RegisterPlayerInvoice(false, "", 0, "").serialize());
+    } else {
       log.debug('attempting registration for player: ' + player.id);
 
       var registration = this.pendingRegistrations[player.id] = {
         player: player,
         address: null,
+        redeemAddress: redeemAddress,
         balance: 0,
       };
 
+      // TODO: Send redeem address for checking it
       this.walletServerClient.requestRegistrationInvoice(player.id);
-    } else {
-      // Registration cannot take place.
-      player.send(new Messages.RegisterPlayerInvoice(false, "", 0, "").serialize());
+
     }
 
   },
@@ -123,7 +133,6 @@ module.exports = Economy = Class.extend({
       (e) => { return e.address === address; });
 
     var registrationId = "invalid";
-    var initialBalance = 0;
 
     if (pendingRegistration) {
       pendingRegistration.balance += amount;
@@ -134,11 +143,24 @@ module.exports = Economy = Class.extend({
 
       if (succeeded) {
         registrationId = "foobar" + address; // TODO: Use hash function instead
-        initialBalance = (pendingRegistration.balance / 1000);
         delete this.pendingRegistrations[player.id];
+
+        this.registeredPlayers[registrationId] = {
+          address: address,
+          redeemAddress: pendingRegistration.redeemAddress,
+          balance: (pendingRegistration.balance / 1000),
+        };
+
+        // Immediately put player into online set
+        this.tellOnline(player);
+
+        player.registrationId = registrationId;
+
+        // Make player receive the current balance
+        player.updateTreasureBalance();
       }
 
-      this.handleRegistration(player, address, succeeded, registrationId, initialBalance);
+      player.send(new Messages.RegisterPlayerResponse(succeeded, registrationId).serialize());
 
     } else {
       var reg;
@@ -187,22 +209,6 @@ module.exports = Economy = Class.extend({
       log.warning('Payment arrived but no corresponding pending registration found!');
     }
 
-  },
-
-  handleRegistration : function (player, address, succeeded, registrationId, initialBalance) {
-    if (succeeded) {
-      this.registeredPlayers[registrationId] = {
-        address: address,
-        balance: initialBalance,
-      };
-
-      player.registrationId = registrationId;
-
-      // Make player receive the current balance
-      player.updateTreasureBalance();
-    }
-
-    player.send(new Messages.RegisterPlayerResponse(succeeded, registrationId).serialize());
   },
 
   maybeMakeTreasure : function() {

@@ -228,7 +228,8 @@ module.exports = Player = Character.extend({
                 }
             }
             else if (action === Types.Messages.REGISTER_PLAYER_REQUEST) {
-              self.server.economy.generateRegistrationInvoice(self);
+              var redeemAddress = message[1];
+              self.server.economy.attemptRegistration(self, redeemAddress);
             } else if (action === Types.Messages.CASHOUT_REQUEST) {
                 self.server.economy.cashout(self);
             } else {
