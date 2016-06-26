@@ -21,7 +21,7 @@ task runCreateWallet(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   main = mainClassName
 
-  args(['create-wallet', 'config/test.json', 'test'])
+  args(['create-wallet', 'config/test.json', 'testnet', 'test'])
 }
 
 task runServer(type: JavaExec) {
@@ -30,4 +30,19 @@ task runServer(type: JavaExec) {
   main = mainClassName
 
   args(['run', 'config/test.json'])
+}
+
+task runCreateWalletMain(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = mainClassName
+
+  args(['create-wallet', 'config/mainexample.json', 'mainnet', 'mainexample'])
+}
+
+task runServerMain(type: JavaExec) {
+  standardInput = System.in
+  classpath = sourceSets.main.runtimeClasspath
+  main = mainClassName
+
+  args(['run', 'config/mainexample.json'])
 }

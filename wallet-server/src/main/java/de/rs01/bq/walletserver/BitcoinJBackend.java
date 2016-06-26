@@ -11,6 +11,10 @@ import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionOutput;
 import org.bitcoinj.kits.WalletAppKit;
+import org.bitcoinj.script.Script;
+import org.bitcoinj.script.ScriptBuilder;
+import org.bitcoinj.script.ScriptOpCodes;
+import org.bitcoinj.wallet.SendRequest;
 import org.bitcoinj.wallet.UnreadableWalletException;
 import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.Wallet.BalanceType;
@@ -153,6 +157,33 @@ public class BitcoinJBackend {
 		    @Override
 		    public void run() {
 		    	notifyCoinsSent(id, address, coin);
+		    }
+		}, executor);
+		
+	}
+	
+	void sendCoinsWithMsg(String msg) {
+		Address address = kit.wallet().freshReceiveAddress();
+		SendResult sendResult = null;
+		logger.info("[{}] - created new address for OP_RETURN tx", address);
+		
+        final SendRequest request = SendRequest.to(address, Coin.MILLICOIN);
+        
+        byte[] data = msg.getBytes();
+        
+        request.tx.addOutput(Coin.ZERO, new ScriptBuilder().op(ScriptOpCodes.OP_RETURN).data(data).build());
+        
+		try {
+			sendResult = kit.wallet().sendCoins(kit.peerGroup(), request);
+		} catch (InsufficientMoneyException e) {
+			logger.warn("[{}] - failed to send {} BTC. Not enough money in wallet: {}", address, Coin.MILLICOIN,
+					getWalletBalance());
+		}
+		
+		sendResult.broadcastComplete.addListener(new Runnable() {
+		    @Override
+		    public void run() {
+				logger.info("[{}] - published tx with OP_RETURN", request.tx.getHashAsString());
 		    }
 		}, executor);
 		

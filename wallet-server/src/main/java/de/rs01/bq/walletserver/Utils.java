@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.io.Reader;
 
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.UnreadableWalletException;
@@ -24,10 +25,22 @@ public final class Utils {
 
 	}
 
-	static void createWalletAndConfiguration(String fileName, String prefix) throws IOException {
+	static void createWalletAndConfiguration(String fileName, String networkId, String prefix) throws IOException {
 		File f = new File(fileName);
 		// TODO: Get params from somewhere
-		Wallet w = new Wallet(TestNet3Params.get());
+		NetworkParameters networkParameters = null;
+		switch (networkId) {
+		case "mainnet":
+			networkParameters = MainNetParams.get();
+			break;
+		case "testnet":
+			networkParameters = TestNet3Params.get();
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid network id: " + networkId + ". Must be 'testnet' or 'mainnet'.");
+		}
+		
+		Wallet w = new Wallet(networkParameters);
 		DeterministicSeed seed = w.getKeyChainSeed();
 
 		ServerConfiguration c = ServerConfiguration.createEmptyConfiguration();
@@ -61,7 +74,7 @@ public final class Utils {
 	static void startBeanShell(Object frontend, Object backend) {
 
 		Interpreter itp = new Interpreter(new InputStreamReader(System.in), System.out, System.err, true);
-		//itp.setExitOnEOF(false);
+		// itp.setExitOnEOF(false);
 
 		try {
 			itp.set("LF", LoggerFactory.class);

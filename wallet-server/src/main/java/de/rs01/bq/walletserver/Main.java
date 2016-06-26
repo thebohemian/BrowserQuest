@@ -28,7 +28,7 @@ public class Main {
 			new Main(args[1]);
 			break;
 		case CREATE_WALLET:
-			Utils.createWalletAndConfiguration(args[1], args[2]);
+			Utils.createWalletAndConfiguration(args[1], args[2], args[3]);
 			System.exit(0);
 			break;
 		default:
