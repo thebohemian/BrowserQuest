@@ -151,10 +151,10 @@ module.exports = Economy = Class.extend({
           balance: (pendingRegistration.balance / 1000),
         };
 
+        player.registrationId = registrationId;
+
         // Immediately put player into online set
         this.tellOnline(player);
-
-        player.registrationId = registrationId;
 
         // Make player receive the current balance
         player.updateTreasureBalance();
