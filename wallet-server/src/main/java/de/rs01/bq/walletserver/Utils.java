@@ -27,6 +27,12 @@ public final class Utils {
 
 	static void createWalletAndConfiguration(String fileName, String networkId, String prefix) throws IOException {
 		File f = new File(fileName);
+
+		File parent = f.getParentFile();
+		if (!parent.exists()) {
+			parent.mkdirs();
+		}
+
 		// TODO: Get params from somewhere
 		NetworkParameters networkParameters = null;
 		switch (networkId) {
