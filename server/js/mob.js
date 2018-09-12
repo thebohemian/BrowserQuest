@@ -1,5 +1,5 @@
 
-var cls = require("./lib/class"),
+var Character = require("./character"),
     _ = require("underscore"),
     Messages = require("./message"),
     Properties = require("./properties"),

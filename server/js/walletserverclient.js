@@ -1,7 +1,7 @@
 var cls = require("./lib/class");
 var io = require('socket.io-client');
 
-module.exports = WalletServerClient = Class.extend({
+module.exports = WalletServerClient = cls.Class.extend({
 
   init: function(url) {
     this.socket = io.connect(url, { });

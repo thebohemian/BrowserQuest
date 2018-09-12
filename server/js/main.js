@@ -4,12 +4,13 @@ var fs = require('fs'),
     Economy = require('./economy'),
     WalletServerClient = require('./walletserverclient');
 
-function main(config) {
-    var ws = require("./ws"),
+var ws = require("./ws"),
         WorldServer = require("./worldserver"),
         Log = require('log'),
-        _ = require('underscore'),
-        server = new ws.socketIOServer(config.host, config.port),
+        _ = require('underscore');
+
+function main(config) {
+	var server = new ws.socketIOServer(config.host, config.port),
         walletserverclient = new WalletServerClient(config.walletserver_url),
         economy = new Economy(walletserverclient, config.registered_players_filepath),
         metrics = config.metrics_enabled ? new Metrics(config) : null;

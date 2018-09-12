@@ -2,7 +2,7 @@
 var cls = require("./lib/class"),
     _ = require("underscore");
 
-module.exports = Metrics = Class.extend({
+module.exports = Metrics = cls.Class.extend({
     init: function(config) {
         var self = this;
         

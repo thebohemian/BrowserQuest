@@ -1,4 +1,4 @@
-
+(function(){
 /* Simple JavaScript Inheritance
  * By John Resig http://ejohn.org/
  * MIT Licensed.
@@ -46,8 +46,9 @@ Class.extend = function(prop) {
     // The dummy class constructor
     Class = function () {
         // All construction is actually done in the init method
-        if ( !initializing && this.init )
+        if ( !initializing && this.init) {
             this.init.apply(this, arguments);
+        }
     }
     
     // Populate our constructed prototype object
@@ -65,4 +66,6 @@ Class.extend = function(prop) {
 if(!(typeof exports === 'undefined')) {
     exports.Class = Class;
 }
+
+})();
 

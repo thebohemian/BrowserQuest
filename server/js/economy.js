@@ -3,7 +3,7 @@ var cls = require("./lib/class");
 var fs = require("fs");
 var _ = require('underscore');
 
-module.exports = Economy = Class.extend({
+module.exports = Economy = cls.Class.extend({
 
   init: function(walletServerClient, registeredPlayersFile) {
     var self = this;
